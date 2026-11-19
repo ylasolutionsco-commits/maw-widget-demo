@@ -1,0 +1,290 @@
+<!doctype html>
+<html lang="en-GB">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="robots" content="noindex">
+<title>Assistant setup</title>
+<style>
+  /* Layout: sticky section index on the left (top strip on phones), one form column; sign-off closes every section. */
+  :root { --bg:#f6f8f7; --panel:#ffffff; --fg:#17302a; --muted:#566b65; --line:#d6e1dc; --accent:#1f6b57; --accent-ink:#fff;
+          --ok:#1d7a4a; --warn:#9a5a00; --err:#a3261b; --soft:#eaf2ee; }
+  @media (prefers-color-scheme: dark) { :root { --bg:#0f1715; --panel:#16211e; --fg:#e2ece8; --muted:#9db3ac; --line:#2a3d38; --accent:#5fbf9f;
+          --accent-ink:#0b1714; --ok:#6fd39b; --warn:#f0b35a; --err:#ff8a7e; --soft:#1c2b27; color-scheme: dark; } }
+  * { box-sizing: border-box; }
+  body { margin: 0; background: var(--bg); color: var(--fg); font: 16px/1.55 system-ui, -apple-system, "Segoe UI", Roboto, sans-serif; }
+  header.top { position: sticky; top: 0; z-index: 5; background: var(--panel); border-bottom: 1px solid var(--line);
+    padding: 12px max(16px, env(safe-area-inset-right)) 12px max(16px, env(safe-area-inset-left)); display: flex; gap: 12px; align-items: center; flex-wrap: wrap; }
+  header.top h1 { font-size: 17px; margin: 0; flex: 1; min-width: 200px; }
+  .status { font-size: 13px; color: var(--muted); font-variant-numeric: tabular-nums; }
+  .wrap { max-width: 1080px; margin: 0 auto; display: grid; grid-template-columns: 240px minmax(0, 1fr); gap: 32px;
+    padding: 24px max(16px, env(safe-area-inset-right)) 80px max(16px, env(safe-area-inset-left)); }
+  nav { position: sticky; top: 72px; align-self: start; display: flex; flex-direction: column; gap: 2px; }
+  nav a { color: var(--fg); text-decoration: none; padding: 7px 10px; border-radius: 8px; display: flex; justify-content: space-between; gap: 8px; font-size: 14.5px; }
+  nav a:hover { background: var(--soft); }
+  nav .pill { font-size: 12px; color: var(--muted); font-variant-numeric: tabular-nums; white-space: nowrap; }
+  nav .pill.done { color: var(--ok); }
+  @media (max-width: 760px) { .wrap { grid-template-columns: minmax(0, 1fr); } nav { position: static; flex-direction: row; overflow-x: auto; } nav a { white-space: nowrap; } }
+  .intro { color: var(--muted); max-width: 62ch; margin: 0 0 24px; }
+  section.s { background: var(--panel); border: 1px solid var(--line); border-radius: 12px; padding: 20px; margin-bottom: 20px; scroll-margin-top: 80px; }
+  section.s h2 { margin: 0 0 14px; font-size: 19px; }
+  .f { display: grid; gap: 4px; margin-bottom: 16px; }
+  .f > label, .lbl { font-weight: 600; font-size: 14.5px; }
+  .req { color: var(--warn); font-weight: 500; font-size: 12.5px; margin-left: 6px; }
+  .help { color: var(--muted); font-size: 13.5px; margin: 0; }
+  input, select, textarea { font: inherit; color: var(--fg); background: var(--panel); border: 1px solid var(--line); border-radius: 8px; padding: 8px 10px; width: 100%; min-width: 0; }
+  textarea { min-height: 72px; resize: vertical; }
+  input:focus-visible, select:focus-visible, textarea:focus-visible, button:focus-visible, a:focus-visible { outline: 3px solid var(--accent); outline-offset: 1px; }
+  .hours { display: grid; grid-template-columns: 90px 1fr 1fr auto; gap: 6px 10px; align-items: center; }
+  .hours label { font-size: 14px; }
+  .row { border: 1px solid var(--line); border-radius: 10px; padding: 12px; display: grid; gap: 8px; margin-bottom: 10px; background: var(--soft); }
+  .row .sub { display: grid; gap: 3px; } .row .sub label { font-size: 13.5px; font-weight: 600; }
+  button { font: inherit; border-radius: 8px; padding: 8px 14px; cursor: pointer; border: 1px solid var(--line); background: var(--panel); color: var(--fg); }
+  button.primary { background: var(--accent); color: var(--accent-ink); border-color: var(--accent); font-weight: 600; }
+  button.link { border: 0; background: none; color: var(--err); padding: 0; font-size: 13.5px; justify-self: start; }
+  .sign { border-top: 1px dashed var(--line); margin-top: 8px; padding-top: 14px; display: grid; grid-template-columns: 1fr 180px; gap: 10px; }
+  .sign .lbl { grid-column: 1 / -1; }
+  @media (max-width: 520px) { .sign { grid-template-columns: 1fr; } .hours { grid-template-columns: 70px 1fr 1fr; } .hours .closed { grid-column: 2 / -1; } }
+  .notice { border-radius: 10px; padding: 14px 16px; margin-bottom: 20px; }
+  .notice.err { background: color-mix(in srgb, var(--err) 12%, var(--panel)); color: var(--err); }
+  .notice.ok { background: color-mix(in srgb, var(--ok) 12%, var(--panel)); color: var(--ok); }
+  .notice.warn { background: color-mix(in srgb, var(--warn) 12%, var(--panel)); color: var(--fg); }
+  .notice ul { margin: 6px 0 0; padding-left: 20px; }
+  fieldset { border: 0; padding: 0; margin: 0; min-width: 0; }
+  .start { background: var(--panel); border: 2px solid var(--accent); border-radius: 12px; padding: 20px; margin-bottom: 20px; }
+  .start h2 { margin: 0 0 6px; font-size: 19px; }
+  .start p { margin: 0 0 12px; color: var(--muted); }
+  .start .go { display: flex; gap: 8px; flex-wrap: wrap; } .start .go input { flex: 1 1 240px; }
+  .start .alt { margin-top: 12px; font-size: 14.5px; } .start .alt button { border: 0; background: none; color: var(--accent); text-decoration: underline; padding: 0; }
+  .src { display: inline-block; font-size: 12px; font-weight: 500; color: var(--warn); background: color-mix(in srgb, var(--warn) 12%, var(--panel));
+    border-radius: 6px; padding: 1px 7px; margin-left: 6px; }
+</style>
+</head>
+<body>
+<header class="top">
+  <h1 id="title">Booking assistant setup</h1>
+  <span class="status" id="status" role="status" aria-live="polite">Loading…</span>
+  <button class="primary" id="submit" type="button" disabled>Send for review</button>
+</header>
+<div class="wrap">
+  <nav id="nav" aria-label="Sections"></nav>
+  <main>
+    <div id="notice"></div>
+    <section class="start" id="start" hidden aria-labelledby="start-t">
+      <h2 id="start-t">Start from your website</h2>
+      <p>We'll read your public website and fill in what we can: hours, services, prices, staff and common questions. You then check every answer and sign it off. Nothing from your website is used until you approve it.</p>
+      <div class="go"><label for="site" class="sr" style="position:absolute;clip:rect(0 0 0 0)">Website address</label>
+        <input id="site" type="url" placeholder="www.yourclinic.co.uk" autocomplete="url">
+        <button class="primary" id="scan" type="button">Scan my website</button></div>
+      <p class="alt">No website, or prefer to type it yourself? <button type="button" id="manual">Fill it in manually</button></p>
+    </section>
+    <p class="intro">These answers set up your booking assistant. Your changes save automatically, so you can come back to this link. Each section ends with a sign-off: the person named confirms the answers are approved for the assistant to use. Answers marked <span class="req" style="margin:0">needed for pilot</span> must be filled in before we can go live.</p>
+    <form id="form" novalidate></form>
+  </main>
+</div>
+<script type="module">
+import { SECTIONS, missing, unsigned } from './schema.js';
+
+const ENDPOINT = 'https://jddjbmndudrudmjekykb.supabase.co/functions/v1/onboarding';
+const DAYS = [['mon','Monday'],['tue','Tuesday'],['wed','Wednesday'],['thu','Thursday'],['fri','Friday'],['sat','Saturday'],['sun','Sunday']];
+const token = new URLSearchParams(location.hash.slice(1)).get('t');
+const $ = (s, el = document) => el.querySelector(s);
+const statusEl = $('#status'), form = $('#form'), submitBtn = $('#submit');
+let data = {}, locked = false, saveTimer = null;
+
+const esc = (s) => String(s ?? '').replace(/[&<>"]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
+const notice = (cls, html) => { $('#notice').innerHTML = html ? `<div class="notice ${cls}">${html}</div>` : ''; };
+
+async function call(action, extra = {}) {
+  const r = await fetch(ENDPOINT, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ token, action, ...extra }) });
+  const j = await r.json().catch(() => ({}));
+  if (!r.ok) throw Object.assign(new Error(j.error || 'ERROR'), { code: j.error, status: r.status });
+  return j;
+}
+
+function input(f, value, name) {
+  const id = `f-${name}`;
+  const v = value ?? f.default ?? '';
+  if (f.type === 'textarea') return `<textarea id="${id}" name="${name}">${esc(v)}</textarea>`;
+  if (f.type === 'select') return `<select id="${id}" name="${name}"><option value="">Choose…</option>${f.options.map((o) => `<option${o === v ? ' selected' : ''}>${esc(o)}</option>`).join('')}</select>`;
+  const type = { email: 'email', url: 'url', tel: 'tel', number: 'number' }[f.type] || 'text';
+  return `<input id="${id}" name="${name}" type="${type}" value="${esc(v)}"${type === 'number' ? ' inputmode="numeric" min="0"' : ''}>`;
+}
+
+function fieldHtml(f) {
+  const req = (f.need === 'pilot' ? '<span class="req">needed for pilot</span>' : '')
+    + (data._sources?.[f.id] === 'website' ? '<span class="src">From your website, please check</span>' : '');
+  const help = f.help ? `<p class="help" id="h-${f.id}">${esc(f.help)}</p>` : '';
+  if (f.type === 'hours') {
+    const h = data[f.id] ?? {};
+    const rows = DAYS.map(([d, name]) => {
+      const [open, close] = h[d]?.[0] ?? ['', ''];
+      const closed = h[d] && !h[d].length;
+      return `<label for="h-${d}-o">${name}</label>
+        <input id="h-${d}-o" type="time" data-hours="${d}" data-part="0" value="${esc(open)}" aria-label="${name} opens"${closed ? ' disabled' : ''}>
+        <input type="time" data-hours="${d}" data-part="1" value="${esc(close)}" aria-label="${name} closes"${closed ? ' disabled' : ''}>
+        <label class="closed"><input type="checkbox" data-closed="${d}"${closed ? ' checked' : ''} style="width:auto"> Closed</label>`;
+    }).join('');
+    return `<div class="f"><span class="lbl">${esc(f.label)}${req}</span>${help}<div class="hours" data-field="${f.id}">${rows}</div></div>`;
+  }
+  if (f.type === 'list') {
+    const rows = (data[f.id]?.length ? data[f.id] : [{}]).map((row, i) => `<fieldset class="row" data-list="${f.id}" data-i="${i}">
+      <legend class="sr" style="position:absolute;clip:rect(0 0 0 0)">${esc(f.label)} ${i + 1}</legend>
+      ${f.item.map((sf) => `<div class="sub"><label for="f-${f.id}.${i}.${sf.id}">${esc(sf.label)}</label>${input(sf, row[sf.id], `${f.id}.${i}.${sf.id}`)}</div>`).join('')}
+      <button type="button" class="link" data-remove="${f.id}" data-i="${i}">Remove</button></fieldset>`).join('');
+    return `<div class="f"><span class="lbl">${esc(f.label)}${req}</span>${help}${rows}<button type="button" data-add="${f.id}">Add another</button></div>`;
+  }
+  return `<div class="f"><label for="f-${f.id}">${esc(f.label)}${req}</label>${help}${input(f, data[f.id], f.id)}</div>`;
+}
+
+function render() {
+  form.innerHTML = SECTIONS.map((s) => {
+    const so = data._signoff?.[s.id] ?? {};
+    return `<section class="s" id="${s.id}" aria-labelledby="t-${s.id}"><h2 id="t-${s.id}">${esc(s.title)}</h2>
+      <fieldset${locked ? ' disabled' : ''}>${s.fields.map(fieldHtml).join('')}
+      <div class="sign"><span class="lbl">Approved by</span>
+        <input aria-label="${esc(s.title)}: approver name" placeholder="Full name and role" data-sign="${s.id}" data-k="name" value="${esc(so.name)}">
+        <input aria-label="${esc(s.title)}: approval date" type="date" data-sign="${s.id}" data-k="date" value="${esc(so.date)}"></div>
+      </fieldset></section>`;
+  }).join('');
+  progress();
+}
+
+function progress() {
+  const miss = missing(data, 'pilot');
+  const uns = unsigned(data);
+  $('#nav').innerHTML = SECTIONS.map((s) => {
+    const n = miss.filter((m) => m.section === s.title).length;
+    const signed = !uns.includes(s.title);
+    const label = n ? `${n} to do` : signed ? 'Approved' : 'Needs sign-off';
+    return `<a href="#${s.id}"><span>${esc(s.title)}</span><span class="pill${!n && signed ? ' done' : ''}">${label}</span></a>`;
+  }).join('');
+  submitBtn.disabled = locked;
+}
+
+// read the form back into `data`
+function collect() {
+  const next = { _signoff: { ...(data._signoff ?? {}) }, _sources: { ...(data._sources ?? {}) } };
+  for (const s of SECTIONS) for (const f of s.fields) {
+    if (f.type === 'hours') {
+      const h = {};
+      for (const [d] of DAYS) {
+        if ($(`[data-closed="${d}"]`).checked) { h[d] = []; continue; }
+        const o = $(`[data-hours="${d}"][data-part="0"]`).value, c = $(`[data-hours="${d}"][data-part="1"]`).value;
+        if (o && c) h[d] = [[o, c]];
+      }
+      next[f.id] = h;
+    } else if (f.type === 'list') {
+      next[f.id] = [...form.querySelectorAll(`[data-list="${f.id}"]`)].map((fs) =>
+        Object.fromEntries(f.item.map((sf) => [sf.id, fs.querySelector(`[name="${f.id}.${fs.dataset.i}.${sf.id}"]`).value])));
+    } else {
+      const el = form.elements[f.id];
+      next[f.id] = f.type === 'number' && el.value !== '' ? Number(el.value) : el.value;
+    }
+  }
+  for (const el of form.querySelectorAll('[data-sign]')) (next._signoff[el.dataset.sign] ??= {})[el.dataset.k] = el.value;
+  data = next;
+}
+
+function scheduleSave() {
+  if (locked) return;
+  collect(); progress();
+  statusEl.textContent = 'Saving…';
+  clearTimeout(saveTimer);
+  saveTimer = setTimeout(save, 1200);
+}
+async function save() {
+  try {
+    await call('save', { data });
+    statusEl.textContent = `Saved ${new Date().toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit' })}`;
+  } catch (e) {
+    statusEl.textContent = 'Not saved';
+    notice('err', e.code === 'ALREADY_SUBMITTED' ? 'These answers have already been sent for review, so they can no longer be edited here.'
+      : 'Your latest changes could not be saved. Check your connection; we will try again when you next edit.');
+  }
+}
+
+form.addEventListener('input', (e) => {
+  const fid = e.target.dataset.hours ? 'opening_hours' : String(e.target.name || '').split('.')[0];
+  if (data._sources?.[fid]) { delete data._sources[fid]; const b = e.target.closest('.f')?.querySelector('.src'); if (b) b.remove(); }
+  scheduleSave();
+});
+form.addEventListener('change', (e) => {
+  const d = e.target.dataset.closed;
+  if (d) for (const el of form.querySelectorAll(`[data-hours="${d}"]`)) el.disabled = e.target.checked;
+  scheduleSave();
+});
+form.addEventListener('click', (e) => {
+  const add = e.target.dataset.add, rem = e.target.dataset.remove;
+  if (!add && !rem) return;
+  collect();
+  if (add) (data[add] ??= []).push({});
+  if (rem) { data[rem].splice(Number(e.target.dataset.i), 1); }
+  render(); scheduleSave();
+});
+
+const startEl = $('#start');
+$('#manual').addEventListener('click', () => { startEl.hidden = true; $('#business').scrollIntoView({ behavior: 'smooth' }); });
+$('#scan').addEventListener('click', async () => {
+  const url = $('#site').value.trim();
+  if (!url) { $('#site').focus(); return; }
+  const btn = $('#scan'); btn.disabled = true; btn.textContent = 'Reading your website…';
+  statusEl.textContent = 'This can take up to a minute';
+  collect(); clearTimeout(saveTimer);
+  try {
+    const r = await call('scan', { url, data });
+    data = r.data; render(); startEl.hidden = true;
+    statusEl.textContent = 'All changes saved';
+    notice(r.filled.length ? 'ok' : 'warn', r.filled.length
+      ? `We filled in ${r.filled.length} answer${r.filled.length > 1 ? 's' : ''} from your website. They're marked <span class="src" style="margin:0">From your website, please check</span>. Please check each one, fill in the rest, and sign off every section.`
+      : "We couldn't find much on your website, so please fill the form in yourself.");
+    scrollTo({ top: 0, behavior: 'smooth' });
+  } catch (e) {
+    statusEl.textContent = '';
+    notice('err', { BAD_URL: 'That website address doesn\u2019t look right. Use your public address, like www.yourclinic.co.uk.',
+      SITE_UNREADABLE: 'We couldn\u2019t read enough from that website. Please fill the form in yourself.',
+      SCAN_LIMIT: 'You\u2019ve scanned a few times today. Please fill in the rest yourself.' }[e.code] ?? 'The scan didn\u2019t work this time. You can try again or fill the form in yourself.');
+  } finally { btn.disabled = false; btn.textContent = 'Scan my website'; }
+});
+
+submitBtn.addEventListener('click', async () => {
+  collect();
+  const miss = missing(data, 'pilot'), uns = unsigned(data);
+  if (miss.length || uns.length) {
+    notice('warn', `<strong>A few things are still needed before review:</strong><ul>${miss.map((m) => `<li>${esc(m.section)}: ${esc(m.field)}</li>`).join('')}${uns.map((s) => `<li>${esc(s)}: sign-off (name and date)</li>`).join('')}</ul>`);
+    $('#notice').scrollIntoView({ behavior: 'smooth' });
+    return;
+  }
+  clearTimeout(saveTimer);
+  submitBtn.disabled = true;
+  try {
+    await call('submit', { data });
+    locked = true; render();
+    statusEl.textContent = 'Sent for review';
+    notice('ok', 'Thank you. Your answers have been sent for review. We will check them and set up your assistant; if anything needs changing we will reopen this form for you.');
+    scrollTo({ top: 0, behavior: 'smooth' });
+  } catch { submitBtn.disabled = false; notice('err', 'Could not send. Please try again in a minute.'); }
+});
+
+(async () => {
+  if (!token) { statusEl.textContent = ''; notice('err', 'This page needs your personal setup link. Please use the link we sent you.'); return; }
+  try {
+    const r = await call('load');
+    data = r.data ?? {};
+    // suggested defaults count as answers (the client can still change them)
+    for (const s of SECTIONS) for (const f of s.fields) if (f.default !== undefined && (data[f.id] ?? '') === '') data[f.id] = f.default;
+    locked = r.status !== 'draft';
+    render();
+    statusEl.textContent = locked ? 'Sent for review' : 'All changes saved';
+    // offer the website scan first until they've started (manual entry stays one click away)
+    const started = Object.keys(data).some((k) => !k.startsWith('_') && !SECTIONS.some((s) => s.fields.some((f) => f.id === k && f.default === data[k])));
+    if (!locked && !started) { startEl.hidden = false; $('#site').value = data.website ?? ''; }
+    if (locked) notice('ok', 'These answers have been sent for review. Contact us if something needs changing.');
+  } catch (e) {
+    statusEl.textContent = '';
+    notice('err', e.status === 401 ? 'This setup link is not valid or has expired. Ask us for a new one.' : 'The setup form could not load. Please try again shortly.');
+  }
+})();
+</script>
+</body>
+</html>

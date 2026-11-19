@@ -1,0 +1,53 @@
+<!doctype html>
+<html lang="en-GB">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Ancoats Physio demo</title>
+<meta name="robots" content="noindex">
+<style>
+  /* Layout: a plain one-column clinic page standing in for a client's own website; the widget is the point. */
+  :root { --bg:#f7faf8; --fg:#16302b; --muted:#4d6660; --line:#d5e2dc; --accent:#1f6b57; --banner:#fff4d6; --banner-fg:#5a4300; }
+  @media (prefers-color-scheme: dark) { :root { --bg:#101a17; --fg:#e3eeea; --muted:#a3bab3; --line:#2a3f3a; --accent:#5fbf9f; --banner:#3a3016; --banner-fg:#f3dc9a; color-scheme: dark; } }
+  * { box-sizing: border-box; }
+  body { margin: 0; background: var(--bg); color: var(--fg); font: 16px/1.6 system-ui, -apple-system, "Segoe UI", Roboto, sans-serif; }
+  .banner { background: var(--banner); color: var(--banner-fg); font-size: 14px; padding: 10px max(16px, env(safe-area-inset-right)) 10px max(16px, env(safe-area-inset-left)); text-align: center; }
+  main { max-width: 680px; margin: 0 auto; padding: 40px max(16px, env(safe-area-inset-right)) 120px max(16px, env(safe-area-inset-left)); }
+  h1 { font-size: clamp(28px, 6vw, 40px); line-height: 1.15; margin: 0 0 12px; text-wrap: balance; }
+  h2 { font-size: 18px; margin: 32px 0 8px; }
+  p { margin: 0 0 12px; color: var(--muted); }
+  table { border-collapse: collapse; width: 100%; font-variant-numeric: tabular-nums; }
+  td { padding: 8px 0; border-bottom: 1px solid var(--line); } td:last-child { text-align: right; }
+  .try { border-left: 3px solid var(--accent); padding: 4px 0 4px 14px; }
+  .try li { color: var(--muted); }
+  a { color: var(--accent); }
+</style>
+</head>
+<body>
+<div class="banner">Demo with a fictional clinic and fake data. Do not enter real personal or medical details.</div>
+<main>
+  <h1>Ancoats Physio &amp; Wellness</h1>
+  <p>Physiotherapy and sports massage in Ancoats, Manchester. Open Monday to Friday 08:00–19:00 and Saturday 09:00–13:00.</p>
+
+  <h2>Treatments</h2>
+  <table>
+    <tr><td>Initial physiotherapy assessment · 45 min</td><td>£65</td></tr>
+    <tr><td>Follow-up physiotherapy · 30 min</td><td>£50</td></tr>
+    <tr><td>Sports massage · 60 min</td><td>£55</td></tr>
+  </table>
+
+  <h2>Try the booking assistant</h2>
+  <div class="try">
+    <p>Open “Chat or book” in the corner and try:</p>
+    <ul>
+      <li>“Is there parking near you?”</li>
+      <li>“Book me a sports massage next week.” Use a made-up name and a test mobile such as 07700 900123.</li>
+      <li>“Should I use ice or heat on my knee?” The assistant passes this to staff and doesn't give advice.</li>
+    </ul>
+  </div>
+  <p style="margin-top:24px"><a href="privacy.html">Privacy notice (demo)</a></p>
+</main>
+<script src="maw-chat.js" data-widget-id="ancoats-widget"
+        data-endpoint="https://jddjbmndudrudmjekykb.supabase.co/functions/v1/chat" defer></script>
+</body>
+</html>

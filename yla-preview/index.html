@@ -1,0 +1,343 @@
+<!doctype html>
+<html lang="en-GB">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>YLA Solutions | AI phone agents for UK businesses</title>
+<meta name="description" content="AI agents that answer your calls, book appointments and pass the right ones to your team, 24/7. Hear it for yourself: get a demo call in a minute.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  /* Layout: one column. The hero IS the demo: the call box sits beside the promise, then features, pricing, estimate, FAQ, contact. */
+  :root {
+    --paper:#f6f6f1; --ink:#101826; --muted:#5a6272; --line:#dcddd3; --card:#ffffff;
+    --signal:#1f4cff; --signal-ink:#ffffff; --live:#12a150; --soft:#eceee6;
+    --display:"Bricolage Grotesque", "Arial Black", system-ui, sans-serif; --body:Inter, system-ui, -apple-system, "Segoe UI", sans-serif;
+  }
+  @media (prefers-color-scheme: dark) { :root { --paper:#0d1320; --ink:#eef0f4; --muted:#a3abba; --line:#25304a; --card:#141c2d;
+    --signal:#6b8cff; --signal-ink:#0b1020; --live:#3ddc84; --soft:#18223a; color-scheme: dark; } }
+  * { box-sizing: border-box; }
+  [hidden] { display: none !important; }
+  .ctrls { display: flex; gap: 10px; margin-top: 12px; }
+  html { scroll-behavior: smooth; } @media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } }
+  body { margin: 0; background: var(--paper); color: var(--ink); font: 17px/1.6 var(--body); }
+  a { color: inherit; }
+  .w { max-width: 1120px; margin: 0 auto; padding-left: max(20px, env(safe-area-inset-left)); padding-right: max(20px, env(safe-area-inset-right)); }
+  h1, h2, h3 { font-family: var(--display); line-height: 1.05; letter-spacing: -0.02em; text-wrap: balance; margin: 0; }
+  h2 { font-size: clamp(30px, 4.4vw, 46px); }
+  .eyebrow { font-size: 13px; font-weight: 600; letter-spacing: .08em; text-transform: uppercase; color: var(--signal); margin: 0 0 12px; }
+  .lead { color: var(--muted); max-width: 58ch; }
+  section { padding-block: clamp(56px, 9vw, 104px); scroll-margin-top: 64px; }
+
+  /* nav */
+  header.nav { position: sticky; top: 0; z-index: 10; background: color-mix(in srgb, var(--paper) 88%, transparent); backdrop-filter: blur(10px); border-bottom: 1px solid var(--line); }
+  header.nav .w { display: flex; align-items: center; gap: 24px; height: 64px; }
+  .logo { font-family: var(--display); font-weight: 800; font-size: 22px; text-decoration: none; letter-spacing: -0.03em; }
+  .logo span { color: var(--signal); }
+  header.nav nav { margin-left: auto; display: flex; gap: 22px; align-items: center; font-size: 15px; }
+  header.nav nav a { text-decoration: none; color: var(--muted); } header.nav nav a:hover { color: var(--ink); }
+  .btn { display: inline-flex; align-items: center; justify-content: center; gap: 8px; border: 0; border-radius: 999px; padding: 12px 20px;
+    font: 600 16px/1 var(--body); background: var(--signal); color: var(--signal-ink); text-decoration: none; cursor: pointer; }
+  header.nav .btn { padding: 9px 16px; font-size: 14.5px; color: var(--signal-ink); }
+  .btn:disabled { opacity: .55; cursor: default; }
+  .btn.ghost { background: transparent; color: var(--ink); border: 1px solid var(--line); }
+  :focus-visible { outline: 3px solid var(--signal); outline-offset: 2px; }
+  @media (max-width: 720px) { header.nav nav a:not(.btn) { display: none; } }
+
+  /* hero */
+  .hero { padding-block: clamp(40px, 7vw, 88px) clamp(56px, 8vw, 96px); }
+  .hero .w { display: grid; grid-template-columns: minmax(0, 1.15fr) minmax(0, 1fr); gap: clamp(28px, 5vw, 64px); align-items: center; }
+  @media (max-width: 880px) { .hero .w { grid-template-columns: minmax(0, 1fr); } }
+  .hero h1 { font-size: clamp(44px, 7.4vw, 88px); font-weight: 800; }
+  .hero h1 em { font-style: normal; color: var(--signal); }
+  .hero p.lead { font-size: 19px; margin: 22px 0 0; }
+  .ticks { list-style: none; padding: 0; margin: 26px 0 0; display: flex; flex-wrap: wrap; gap: 8px 18px; font-size: 15px; color: var(--muted); }
+  .ticks li::before { content: "✓"; color: var(--live); font-weight: 700; margin-right: 6px; }
+
+  /* demo call card */
+  .call { background: var(--card); border: 1px solid var(--line); border-radius: 22px; padding: clamp(22px, 3vw, 32px); box-shadow: 0 18px 50px -24px rgb(16 24 38 / .35); }
+  .call h2 { font-size: 28px; } .call p { margin: 8px 0 18px; color: var(--muted); font-size: 15.5px; }
+  .call label { display: block; font-weight: 600; font-size: 14px; margin: 0 0 6px; }
+  .call input[type=tel], .call input[type=text], .call input[inputmode] { width: 100%; font: 500 20px/1 var(--body); letter-spacing: .02em; padding: 14px 16px; border-radius: 12px;
+    border: 1px solid var(--line); background: var(--paper); color: var(--ink); }
+  .call .row { display: grid; gap: 12px; }
+  .call .consent { display: flex; gap: 10px; align-items: flex-start; font-size: 13.5px; color: var(--muted); }
+  .call .consent input { margin-top: 3px; width: 18px; height: 18px; flex: none; }
+  .call .btn { width: 100%; padding: 15px; font-size: 17px; }
+  .call .msg { min-height: 1.4em; font-size: 14.5px; margin: 4px 0 0; }
+  .call .msg.err { color: #c2412d; } @media (prefers-color-scheme: dark) { .call .msg.err { color: #ff8f7c; } }
+  .ringing { display: flex; align-items: center; gap: 14px; padding: 16px; border-radius: 14px; background: var(--soft); }
+  .pulse { width: 14px; height: 14px; border-radius: 50%; background: var(--live); box-shadow: 0 0 0 0 color-mix(in srgb, var(--live) 60%, transparent); animation: p 1.4s infinite; flex: none; }
+  @keyframes p { to { box-shadow: 0 0 0 14px transparent; } } @media (prefers-reduced-motion: reduce) { .pulse { animation: none; } }
+  .small { font-size: 13px; color: var(--muted); } .link { background: none; border: 0; color: var(--signal); padding: 0; font: inherit; cursor: pointer; text-decoration: underline; }
+
+  /* features */
+  .grid4 { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 18px; margin-top: 36px; }
+  @media (max-width: 960px) { .grid4 { grid-template-columns: repeat(2, minmax(0, 1fr)); } } @media (max-width: 560px) { .grid4 { grid-template-columns: minmax(0, 1fr); } }
+  .feat { border-top: 2px solid var(--ink); padding-top: 16px; }
+  .feat h3 { font-size: 21px; margin-bottom: 8px; } .feat p { margin: 0; color: var(--muted); font-size: 15.5px; }
+
+  /* steps */
+  .band { background: var(--ink); color: var(--paper); }
+  .band .lead { color: color-mix(in srgb, var(--paper) 72%, transparent); }
+  .steps { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 28px; margin-top: 36px; counter-reset: s; }
+  @media (max-width: 760px) { .steps { grid-template-columns: minmax(0, 1fr); } }
+  .steps li { list-style: none; } .steps { padding: 0; }
+  .steps li::before { counter-increment: s; content: counter(s); font-family: var(--display); font-size: 48px; font-weight: 800; color: var(--signal); display: block; line-height: 1; margin-bottom: 10px; }
+  .steps h3 { font-size: 21px; margin-bottom: 6px; } .steps p { margin: 0; color: color-mix(in srgb, var(--paper) 72%, transparent); font-size: 15.5px; }
+
+  /* pricing */
+  .plans { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 18px; margin-top: 36px; align-items: start; }
+  @media (max-width: 900px) { .plans { grid-template-columns: minmax(0, 1fr); } }
+  .plan { background: var(--card); border: 1px solid var(--line); border-radius: 18px; padding: 26px; display: grid; gap: 14px; }
+  .plan.pick { border: 2px solid var(--signal); }
+  .plan h3 { font-size: 24px; } .plan .who { color: var(--muted); font-size: 14.5px; margin: 0; }
+  .price { font-family: var(--display); font-weight: 800; font-size: 44px; line-height: 1; font-variant-numeric: tabular-nums; }
+  .price small { font: 500 15px var(--body); color: var(--muted); }
+  .plan ul { margin: 0; padding: 0; list-style: none; display: grid; gap: 8px; font-size: 15px; }
+  .plan li::before { content: "✓"; color: var(--live); font-weight: 700; margin-right: 8px; }
+  .tag { justify-self: start; font-size: 12px; font-weight: 600; letter-spacing: .06em; text-transform: uppercase; background: var(--signal); color: var(--signal-ink); border-radius: 999px; padding: 4px 10px; }
+
+  /* estimate */
+  .est { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 28px; margin-top: 32px; align-items: center; }
+  @media (max-width: 800px) { .est { grid-template-columns: minmax(0, 1fr); } }
+  .est .inputs { display: grid; gap: 16px; }
+  .est label { font-weight: 600; font-size: 15px; display: grid; gap: 6px; }
+  .est input { font: 500 18px var(--body); padding: 12px 14px; border-radius: 10px; border: 1px solid var(--line); background: var(--card); color: var(--ink); width: 100%; }
+  .result { background: var(--card); border: 1px solid var(--line); border-radius: 18px; padding: 26px; }
+  .result .big { font-family: var(--display); font-size: clamp(40px, 6vw, 60px); font-weight: 800; line-height: 1; font-variant-numeric: tabular-nums; margin: 6px 0 10px; }
+
+  /* faq */
+  details { border-bottom: 1px solid var(--line); padding: 18px 0; }
+  details summary { cursor: pointer; font-weight: 600; font-size: 18px; list-style: none; display: flex; justify-content: space-between; gap: 16px; }
+  details summary::after { content: "+"; font-family: var(--display); font-size: 24px; line-height: 1; color: var(--signal); }
+  details[open] summary::after { content: "–"; }
+  details p { color: var(--muted); margin: 10px 0 0; max-width: 70ch; }
+
+  /* contact */
+  .contact { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 18px; margin-top: 28px; }
+  @media (max-width: 640px) { .contact { grid-template-columns: minmax(0, 1fr); } }
+  .contact a { display: block; background: var(--card); border: 1px solid var(--line); border-radius: 16px; padding: 22px; text-decoration: none; }
+  .contact .k { font-size: 13px; font-weight: 600; letter-spacing: .08em; text-transform: uppercase; color: var(--muted); }
+  .contact .v { font-family: var(--display); font-size: clamp(22px, 3vw, 28px); font-weight: 600; overflow-wrap: anywhere; }
+  footer { padding-block: 32px 48px; color: var(--muted); font-size: 14px; border-top: 1px solid var(--line); }
+  footer .w { display: flex; flex-wrap: wrap; gap: 8px 24px; justify-content: space-between; }
+</style>
+</head>
+<body>
+<header class="nav"><div class="w">
+  <a class="logo" href="#top">YLA<span>.</span></a>
+  <nav aria-label="Main"><a href="#what">What it does</a><a href="#pricing">Pricing</a><a href="#faq">FAQ</a><a class="btn" href="#demo">Try the demo</a></nav>
+</div></header>
+
+<main id="top">
+  <section class="hero"><div class="w">
+    <div>
+      <p class="eyebrow">AI phone agents for UK businesses</p>
+      <h1>Every call answered. <em>Every booking made.</em></h1>
+      <p class="lead">YLA builds AI agents that answer your phone 24/7, book and change appointments, and pass the right calls to your team. Don't take our word for it: talk to our agent right now.</p>
+      <ul class="ticks"><li>Answers instantly, day or night</li><li>Books into your diary</li><li>Hands over to a person when needed</li></ul>
+    </div>
+
+    <div class="call" id="demo" aria-live="polite">
+      <div id="step-talk">
+        <h2>Hear it for yourself</h2>
+        <p>Talk to our AI agent right now in your browser. Ask what we do, what it costs, or let it show you a live booking. Free, up to 6 minutes.</p>
+        <button class="btn" id="talk" type="button"><span aria-hidden="true">🎙</span> Talk to our AI now</button>
+        <div class="ringing" id="talk-live" hidden style="margin-top:14px"><span class="pulse" aria-hidden="true"></span><span id="talk-state">Connecting…</span></div>
+        <div id="talk-controls" class="ctrls" hidden>
+          <button class="btn ghost" id="mute" type="button" aria-pressed="false">Mute</button>
+          <button class="btn ghost" id="end" type="button">End</button>
+        </div>
+        <p class="msg" id="msg-talk" role="alert"></p>
+        <p class="small">You'll be asked to allow your microphone. You're talking to an AI; nothing is recorded. <a href="privacy.html">Privacy</a></p>
+        <p class="small" id="phone-alt" hidden>Prefer a phone call? <button class="link" type="button" id="to-phone">We'll ring you</button></p>
+      </div>
+      <div id="step-number" hidden>
+        <h2>Hear it for yourself</h2>
+        <p>Our agent calls you in about a minute, explains what we do, and can show you a live booking. Free, about 3 minutes.</p>
+        <form id="f-number" class="row" novalidate>
+          <div><label for="phone">Your UK mobile number</label><input id="phone" type="tel" inputmode="tel" autocomplete="tel" placeholder="07123 456789" required></div>
+          <label class="consent"><input id="consent" type="checkbox" required> <span>I'd like YLA to text me a code and then call this number once for a demo. The call is with an AI agent. See our <a href="privacy.html">privacy notice</a>.</span></label>
+          <button class="btn" type="submit">Text me a code</button>
+          <p class="msg" id="msg-number" role="alert"></p>
+        </form>
+      </div>
+      <div id="step-code" hidden>
+        <h2>Check your texts</h2>
+        <p>We've sent a 6-digit code to <strong id="shown-number"></strong>. Enter it and we'll call you straight away.</p>
+        <form id="f-code" class="row" novalidate>
+          <div><label for="code">6-digit code</label><input id="code" inputmode="numeric" autocomplete="one-time-code" maxlength="6" pattern="[0-9]{6}" placeholder="123456" required></div>
+          <button class="btn" type="submit">Call me now</button>
+          <p class="msg" id="msg-code" role="alert"></p>
+          <p class="small">Wrong number? <button class="link" type="button" id="restart">Start again</button></p>
+        </form>
+      </div>
+      <div id="step-calling" hidden>
+        <h2>Calling you now</h2>
+        <div class="ringing"><span class="pulse" aria-hidden="true"></span><span>Your phone should ring within a minute from a UK number. Answer and ask it anything.</span></div>
+        <p class="small" style="margin-top:14px">Things to try: "What do you do?", "How much is it?", "Show me how you'd book an appointment", "Can I speak to someone?"</p>
+      </div>
+    </div>
+  </div></section>
+
+  <section id="what"><div class="w">
+    <p class="eyebrow">What it does</p>
+    <h2>The front desk that never misses a call</h2>
+    <div class="grid4">
+      <div class="feat"><h3>Answers every call</h3><p>Picks up instantly, 24/7, handles common questions and tells callers it's an AI assistant.</p></div>
+      <div class="feat"><h3>Books appointments</h3><p>Creates, changes and cancels bookings from the call, using your real availability.</p></div>
+      <div class="feat"><h3>Texts and reminders</h3><p>Sends confirmations and reminders so customers turn up. Premium plan.</p></div>
+      <div class="feat"><h3>Hands over properly</h3><p>Qualifies enquiries and passes the right ones, with a summary, to the right person on your team.</p></div>
+    </div>
+  </div></section>
+
+  <section class="band"><div class="w">
+    <p class="eyebrow">How we set you up</p>
+    <h2>Live in your business, on your terms</h2>
+    <ol class="steps">
+      <li><h3>Free consultation</h3><p>We learn how your calls and bookings work today, and what you want the agent to handle.</p></li>
+      <li><h3>We build it from your website</h3><p>Your hours, services, prices and policies go in. You check and approve every answer it's allowed to give.</p></li>
+      <li><h3>Pilot, then go live</h3><p>Start small, review real calls together, and switch it on fully when you're happy.</p></li>
+    </ol>
+  </div></section>
+
+  <section id="pricing"><div class="w">
+    <p class="eyebrow">Pricing</p>
+    <h2>Simple monthly plans</h2>
+    <p class="lead">Every plan includes setup of your agent, your approved answers and handover to your team. One-off setup fee £500.</p>
+    <div class="plans">
+      <div class="plan"><h3>Standard</h3><p class="who">Independent clinics, salons, barbers and small appointment-based businesses.</p>
+        <div class="price">£200 <small>/ month</small></div>
+        <ul><li>300 call minutes a month</li><li>Answers 24/7, instantly</li><li>Automated appointment booking</li><li>Handover to your team</li></ul>
+        <a class="btn ghost" href="#demo">Try the demo</a></div>
+      <div class="plan pick"><span class="tag">Most popular</span><h3>Premium</h3><p class="who">Busier and multi-site clinics, and businesses that want follow-ups done for them.</p>
+        <div class="price">£300 <small>/ month</small></div>
+        <ul><li>500 call minutes a month</li><li>Everything in Standard</li><li>Text confirmations and reminders</li><li>Follow-ups after appointments and unfinished bookings</li><li>Feedback requests</li><li>Priority support</li></ul>
+        <a class="btn" href="#demo">Try the demo</a></div>
+      <div class="plan"><h3>Custom</h3><p class="who">Several locations, departments or systems, or your own workflow.</p>
+        <div class="price">Let's talk</div>
+        <ul><li>Integrations with your booking or practice software</li><li>Multiple locations and agents</li><li>Custom rules, routing and reporting</li><li>Dedicated implementation support</li></ul>
+        <a class="btn ghost" href="#contact">Get in touch</a></div>
+    </div>
+  </div></section>
+
+  <section id="estimate" style="padding-top:0"><div class="w">
+    <p class="eyebrow">Rough estimate</p>
+    <h2>What could missed calls be worth?</h2>
+    <p class="lead">Put in your own numbers. This is a simple estimate, not a promise: real results depend on your business.</p>
+    <div class="est">
+      <div class="inputs">
+        <label>Calls you miss per week <input id="e-missed" type="number" min="0" inputmode="numeric" value="15"></label>
+        <label>Average value of a new booking (£) <input id="e-value" type="number" min="0" inputmode="numeric" value="60"></label>
+        <label>Share of callers who'd book (%) <input id="e-rate" type="number" min="0" max="100" inputmode="numeric" value="30"></label>
+      </div>
+      <div class="result" aria-live="polite">
+        <div class="small">Estimated value of missed calls</div>
+        <div class="big" id="e-out">£1,170 / month</div>
+        <p class="small" style="margin:0">Missed calls × share who'd book × booking value, over a 4.33-week month.</p>
+      </div>
+    </div>
+  </div></section>
+
+  <section id="faq" style="padding-top:0"><div class="w">
+    <p class="eyebrow">Questions</p>
+    <h2>Commonly asked</h2>
+    <div style="margin-top:20px">
+      <details><summary>What is an AI agent?</summary><p>Software that talks to your customers on the phone or in chat, in plain English. It answers from information you've approved and does set jobs such as booking appointments.</p></details>
+      <details><summary>Can it answer calls 24/7?</summary><p>Yes. It picks up instantly at any time, including evenings, weekends and when your team is busy.</p></details>
+      <details><summary>Can it book straight into my diary?</summary><p>Yes, with booking and practice systems that allow it. Where yours doesn't, the agent takes the booking request and passes it to your team, and never tells a caller they're booked unless the booking is really made.</p></details>
+      <details><summary>Will customers know they're talking to AI?</summary><p>Yes. It introduces itself as an automated assistant and customers can ask for a person at any time.</p></details>
+      <details><summary>Can it put a caller through to a real person?</summary><p>Yes. It can transfer the call or pass the details to the right person on your team with a summary.</p></details>
+      <details><summary>Will it give medical or professional advice?</summary><p>No. Questions that need a professional go straight to your team. The agent only says what you've approved.</p></details>
+      <details><summary>Does it get better over time?</summary><p>Yes. We review conversations with you, update the answers you approve and improve how it handles your calls.</p></details>
+    </div>
+  </div></section>
+
+  <section id="contact" style="padding-top:0"><div class="w">
+    <p class="eyebrow">Free consultation</p>
+    <h2>Talk to us</h2>
+    <div class="contact">
+      <a href="tel:+447871507946"><div class="k">Call</div><div class="v">07871 507946</div></a>
+      <a href="mailto:ylasolutionsco@gmail.com"><div class="k">Email</div><div class="v">ylasolutionsco@gmail.com</div></a>
+    </div>
+  </div></section>
+</main>
+<footer><div class="w"><span>© <span id="yr">2026</span> YLA Solutions · Manchester</span><a href="privacy.html">Privacy</a></div></footer>
+
+<script>
+(() => {
+  const ENDPOINT = 'https://jddjbmndudrudmjekykb.supabase.co/functions/v1/demo-call';
+  const $ = (s) => document.querySelector(s);
+  const show = (id) => { for (const s of ['step-talk', 'step-number', 'step-code', 'step-calling']) $('#' + s).hidden = s !== id; };
+  // shortcut: phone demo stays hidden until a UK number that can call out exists (Twilio blocked, see decision D014)
+  const PHONE_DEMO = false;
+  if (PHONE_DEMO) { $('#phone-alt').hidden = false; $('#to-phone').addEventListener('click', () => show('step-number')); }
+  let phone = '', ticket = '';
+  const toUk = (raw) => { const d = raw.replace(/[\s()-]/g, ''); const e = d.startsWith('+44') ? d : d.startsWith('0') ? '+44' + d.slice(1) : d.startsWith('44') ? '+' + d : ''; return /^\+447\d{9}$/.test(e) ? e : null; };
+  const post = async (body) => { const r = await fetch(ENDPOINT, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(body) });
+    const j = await r.json().catch(() => ({})); return { ok: r.ok, ...j }; };
+  const busy = (form, on, label) => { const b = form.querySelector('button[type=submit]'); b.disabled = on; if (label) b.textContent = label; };
+
+  $('#f-number').addEventListener('submit', async (e) => {
+    e.preventDefault(); const msg = $('#msg-number'); msg.textContent = ''; msg.className = 'msg';
+    phone = toUk($('#phone').value);
+    if (!phone) { msg.textContent = 'Please enter a UK mobile number, starting 07.'; msg.className = 'msg err'; $('#phone').focus(); return; }
+    if (!$('#consent').checked) { msg.textContent = 'Please tick the box so we can text and call you.'; msg.className = 'msg err'; return; }
+    busy(e.target, true, 'Sending…');
+    try {
+      const r = await post({ action: 'start', phone, consent: true });
+      if (!r.ok) throw r;
+      ticket = r.ticket; $('#shown-number').textContent = $('#phone').value.trim(); show('step-code'); $('#code').focus();
+    } catch (r) { msg.textContent = r.message || "We couldn't send a code just now. Please try again later or call us."; msg.className = 'msg err'; }
+    finally { busy(e.target, false, 'Text me a code'); }
+  });
+
+  $('#f-code').addEventListener('submit', async (e) => {
+    e.preventDefault(); const msg = $('#msg-code'); msg.textContent = ''; msg.className = 'msg';
+    const code = $('#code').value.trim();
+    if (!/^\d{6}$/.test(code)) { msg.textContent = 'Enter the 6 digits from the text.'; msg.className = 'msg err'; return; }
+    busy(e.target, true, 'Checking…');
+    try {
+      const r = await post({ action: 'verify', ticket, code });
+      if (!r.ok) throw r;
+      show('step-calling');
+    } catch (r) { msg.textContent = r.message || 'Something went wrong. Please try again.'; msg.className = 'msg err'; }
+    finally { busy(e.target, false, 'Call me now'); }
+  });
+  // browser voice demo: our server hands out a 10-minute pass locked to this site and the demo agent
+  let vapi = null;
+  const talkBtn = $('#talk'), state = (t) => { $('#talk-state').textContent = t; }, talkMsg = $('#msg-talk');
+  const reset = () => { vapi = null; talkBtn.hidden = false; talkBtn.disabled = false; $('#talk-live').hidden = true; $('#talk-controls').hidden = true; };
+  talkBtn.addEventListener('click', async () => {
+    talkMsg.textContent = ''; talkMsg.className = 'msg'; talkBtn.disabled = true;
+    try {
+      const r = await post({ action: 'web' });
+      if (!r.ok) throw r;
+      const mod = await import('https://cdn.jsdelivr.net/npm/@vapi-ai/web@3.1.0/+esm');
+      const Vapi = mod.default?.default ?? mod.default; // the CDN wraps this CommonJS build one level deeper
+      vapi = new Vapi(r.token);
+      talkBtn.hidden = true; $('#talk-live').hidden = false; state('Connecting… allow your microphone if asked.');
+      vapi.on('call-start', () => { state('Connected. Say hello.'); $('#talk-controls').hidden = false; $('#end').focus(); });
+      vapi.on('speech-start', () => state('The agent is speaking…'));
+      vapi.on('speech-end', () => state('Listening…'));
+      vapi.on('call-end', () => { reset(); talkMsg.textContent = 'Call ended. Thanks for trying it! Want to talk to a person? Call 07871 507946.'; });
+      vapi.on('error', (e) => { console.warn(e); reset(); talkMsg.className = 'msg err';
+        talkMsg.textContent = /permission|notallowed|microphone/i.test(JSON.stringify(e ?? '')) ? 'We need your microphone to talk. Allow it in your browser and try again.' : 'The demo had a problem connecting. Please try again, or call us on 07871 507946.'; });
+      await vapi.start(r.assistantId);
+    } catch (r) { reset(); talkMsg.className = 'msg err'; talkMsg.textContent = r?.message || 'The demo had a problem connecting. Please try again, or call us on 07871 507946.'; }
+  });
+  $('#end').addEventListener('click', () => vapi?.stop());
+  $('#mute').addEventListener('click', (e) => { if (!vapi) return; const m = !vapi.isMuted(); vapi.setMuted(m); e.target.setAttribute('aria-pressed', String(m)); e.target.textContent = m ? 'Unmute' : 'Mute'; });
+
+  $('#restart').addEventListener('click', () => { $('#code').value = ''; show('step-number'); $('#phone').focus(); });
+
+  const est = () => { const m = +$('#e-missed').value || 0, v = +$('#e-value').value || 0, r = Math.min(100, +$('#e-rate').value || 0) / 100;
+    $('#e-out').textContent = '£' + Math.round(m * r * v * 4.33).toLocaleString('en-GB') + ' / month'; };
+  for (const id of ['e-missed', 'e-value', 'e-rate']) $('#' + id).addEventListener('input', est); est();
+  $('#yr').textContent = new Date().getFullYear();
+})();
+</script>
+</body>
+</html>
